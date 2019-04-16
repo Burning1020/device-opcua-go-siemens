@@ -1,0 +1,7 @@
+*~
+*.log
+cmd/device-opcua
+glide.lock
+vendor
+.idea
+go.sum

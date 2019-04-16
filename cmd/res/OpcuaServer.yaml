@@ -1,0 +1,68 @@
+# Copyright 2017 Dell Inc. All rights reserved.
+name: "OPCUA-Server"
+manufacturer: "Burning"
+model: "1"
+labels:
+  - "OPCUA"
+  - "test"
+description: "Simulation results of OPCUA Server"
+deviceResources:
+  -
+    name: "Counter1"
+    description: "generated counter number"
+    attributes:
+      { type: "counter" }
+    properties:
+      value:
+        { type: "Int32", size: "0", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100"  }
+      units:
+        { type: "String", readWrite: "R", defaultValue: "" }
+  -
+    name: "Random1"
+    description: "generated random number"
+    attributes:
+      { name: "random" }
+    properties:
+      value:
+        { type: "Float64", size: "4", readWrite: "R", defaultValue: "0.00", minimum: "100.00", maximum: "0.00"  }
+      units:
+        { type: "String", readWrite: "R", defaultValue: "" }
+
+resources:
+  -
+    name: "GetCountNum"
+    get:
+      -
+        { operation: "get", object: "Counter1", property: "value", parameter: "Counter1" }
+  -
+    name: "GetRandNum"
+    get:
+      -
+        { operation: "get", object: "Random1", property: "value", parameter: "Random1" }
+commands:
+  -
+    name: "GetCountNum"
+    get:
+      path: "/api/v1/device/{deviceId}/GetCountNum"
+      responses:
+        -
+          code: "200"
+          description: ""
+          expectedValues: ["GetCountNum"]
+        -
+          code: "503"
+          description: "service unavailable"
+          expectedValues: []
+  -
+    name: "GetRandNum"
+    get:
+      path: "/api/v1/device/{deviceId}/GetRandNum"
+      responses:
+        -
+          code: "200"
+          description: ""
+          expectedValues: ["GetRandNum"]
+        -
+          code: "503"
+          description: "service unavailable"
+          expectedValues: []
