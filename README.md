@@ -1,12 +1,14 @@
-# Device-opcua-go
-OPCUA device service go version.
+# OPC-UA Device Service
 
-OPCUA Server: https://www.prosysopc.com/products/opc-ua-simulation-server
+## Overview
+This repository is a Go-based EdgeX Foundry Device Service which uses OPC-UA protocol to interact with the devices or IoT objects.
 
-## Requisite
-* core-data
-* core-metadata
-* core-command
+## 
+
+## Prerequisite
+* MongoDB
+* Edgex-go
+* OPCUA Server
 
 ## Predefined configuration
 
@@ -42,3 +44,9 @@ Define devices info for device-sdk to auto upload device profile and create devi
 make build
 make run
 ```
+## Reference
+
+* EdgeXFoundry documentation: https://docs.edgexfoundry.org/
+* EdgeX Foundry Services: https://github.com/edgexfoundry/edgex-go
+* Go OPCUA library: https://github.com/gopcua/opcua
+* OPCUA Server: https://www.prosysopc.com/products/opc-ua-simulation-server
