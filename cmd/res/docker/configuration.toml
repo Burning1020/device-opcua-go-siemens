@@ -1,6 +1,6 @@
 [Service]
 Host = "device-opcua-go"
-Port = 49990
+Port = 49997
 ConnectRetries = 3
 Labels = []
 OpenMsg = "device simple started"
@@ -54,54 +54,25 @@ Level = "INFO"
 
 # Pre-define Schedule Configuration
 [[Schedules]]
-Name = "10sec-schedule"
-Frequency = "PT10S"
+Name = "8sec-schedule"
+Frequency = "PT8S"
 
 [[ScheduleEvents]]
-Name = "readTemperature"
-Schedule = "10sec-schedule"
+Name = "readCounter"
+Schedule = "8sec-schedule"
   [ScheduleEvents.Addressable]
   HTTPMethod = "GET"
-  Path = "/api/v1/device/name/KMC.BAC-121036CE01/CurrentTemperature"
-
-[[ScheduleEvents]]
-Name = "readHumidity"
-Schedule = "10sec-schedule"
-  [ScheduleEvents.Addressable]
-  HTTPMethod = "GET"
-  Path = "/api/v1/device/name/KMC.BAC-121036CE01/CurrentHumidity"
+  Path = "/api/v1/device/name/SimulationServer/GetCountNum"
 
 # Pre-define Devices
 [[DeviceList]]
-  Name = "Simple-Device01"
-  Profile = "Simple-Device"
-  Description = "Example of Simple Device"
-  Labels = [ "industrial" ]
+  Name = "SimulationServer"
+  Profile = "OPCUA-Server"
+  Description = "OPCUA device is created for test purpose"
+  Labels = [ "test" ]
   [DeviceList.Addressable]
-    Address = "simple01"
-    Port = 300
-    Protocol = "OTHER"
+    Address = "192.168.3.100"
+    Port = 53530
+    Protocol = "TCP"
+    Path = "/OPCUA/SimulationServer"
 
-# Pre-define Schedule Configuration
-[[Schedules]]
-Name = "10sec-schedule"
-Frequency = "PT10S"
-
-[[ScheduleEvents]]
-Name = "turnOnSwitch"
-Parameters = "[{\"Switch\": \"true\"}]"
-Schedule = "10sec-schedule"
-  [ScheduleEvents.Addressable]
-  HTTPMethod = "PUT"
-  Path = "/api/v1/device/name/Simple-Device01/Switch"
-
-[[Schedules]]
-Name = "5sec-schedule"
-Frequency = "PT5S"
-
-[[ScheduleEvents]]
-Name = "readSwtich"
-Schedule = "5sec-schedule"
-  [ScheduleEvents.Addressable]
-  HTTPMethod = "GET"
-  Path = "/api/v1/device/name/Simple-Device01/Switch"

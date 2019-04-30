@@ -29,13 +29,13 @@ type Driver struct {
 	asyncCh      chan<- *ds_models.AsyncValues
 	switchButton bool
 	Config       *configuration
-	//CommandResponses map[string]string
+	CommandResponses map[string]string
 }
 
 func NewProtocolDriver() ds_models.ProtocolDriver {
 	once.Do(func() {
 		driver = new(Driver)
-		//driver.CommandResponses = make(map[string]string)
+		driver.CommandResponses = make(map[string]string)
 	})
 	return driver
 }

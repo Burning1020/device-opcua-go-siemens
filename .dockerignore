@@ -1,4 +1,7 @@
-# Ignoring the go.sum file. There are checksum issues with
-# different versions of Golang. Remove once all Go versions
-# are in sync
+*~
+*.log
+cmd/device-opcua
+cmd/device-opcua-arm64
 go.sum
+vendor
+.idea
