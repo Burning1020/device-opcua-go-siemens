@@ -20,7 +20,7 @@ type Server struct {
 
 type Node struct {
 	NodeID string
-	// to be added
+	DeviceResource string
 }
 
 // LoadConfigFromFile use to load toml configuration

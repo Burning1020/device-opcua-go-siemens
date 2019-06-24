@@ -47,6 +47,5 @@ docker-arm64:
 	docker build \
 		-f Dockerfile_ARM64 \
 		--label "git_sha=$(GIT_SHA)" \
-		-t burning/docker-device-opcua-go-arm64:$(GIT_SHA) \
-		-t burning/docker-device-opcua-go-arm64:$(VERSION)-dev \
+		-t 192.168.3.128:5000/docker-device-opcua-go-arm64 \
 		.

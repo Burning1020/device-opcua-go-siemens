@@ -35,11 +35,10 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 1. `configuration.toml`文件提供device-opcua服务的信息、consul服务的信息、其他需要和设备服务交互的微服务的信息、Device信息（包含**Device Profile的目录**）、日志信息、预定义Schedule和SchedukeEvent信息（包含要**定时执行的命令**）、预定义设备信息（包含**设备的Addressable信息**）。 
 
-2. `configuration-driver.toml`文件提供OPCUA Server的节点ID信息
+2. `configuration-driver.toml`文件提供OPCUA Server的节点ID信息和NodeID与deviceResource的对应关系
 
 3. Device Profile可以看作这一类设备的模板
 
-   >  A Device Profile can be thought of as a template of a type or classification of Device.
 
    有关它的书写参见[相关资料](#相关资料)1 2
    
@@ -57,13 +56,12 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
   1. 读取配置文件`cmd/res/configuration.toml`，若是在Docker环境下则读取`cmd/res/docker/configuration.toml`文件
   2. 读取配置文件`cmd/res/configuration-driver.toml`
   3. 读取配置中相应目录下的`*.yaml/*.yml`文件
-  4. 调用opcua的 [go SDK](<https://github.com/gopcua/opcua>))， 创建OPCUA 客户端
+  4. 调用opcua的 [go SDK](<https://github.com/gopcua/opcua>)， 创建OPCUA 客户端
   5. 通过轮询的方式对指定节点进行读取操作
   
  + *待完成*
 
      *1. 改为监听的方式*
-
      *2. 节点的设置操作*
 
 ### 1.2.5 包管理
@@ -86,7 +84,9 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 ## 1.3 Export微服务
 
-待补充...
+Export 微服务可将数据导出到西门子工业云平台MindSphere
+
+Export-go: https://github.com/Burning1020/export-go
 
 ## 1.4 Rule Engine微服务
 
@@ -105,7 +105,7 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 详见[相关资料](#相关资料)3
 
-+ 烧录系统：推荐ubuntu 16.04
++ 烧录系统：推荐ubuntu 16.04 链接: https://pan.baidu.com/s/1gRXex4njLKi6dAHcqzrgjw 提取码: 9y5h
 
 + 安装Docker：<https://docs.docker.com/install>
 
@@ -117,7 +117,7 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 修改docker-compose.yml文件，按需修改服务的image地址为`nexus.edgexfoundry.org:10004/<微服务>-go-arm64:<tag号>`，具体详见：<https://docs.edgexfoundry.org/Ch-GettingStartedUsersNexus.html>
 
-*注：*拉取镜像的快慢取决于网络环境，网络环境差的可以参考[相关资料](#相关资料)3
+拉取镜像的快慢取决于网络环境，网络环境差的可以参考[相关资料](#相关资料)3
 
 ## 3.3 树莓派上部署device-opcua服务
 
@@ -128,15 +128,15 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 1. 创建本地仓库：`docker pull registry`
 
-2. 容器中启动仓库： `docker run -d –p \<端口:端口> <仓库名>`
+2. 容器中启动仓库： `docker run -d –p <端口:端口> <仓库名>`
 
 3. 查看本地仓库：`curl 127.0.0.1:<端口>/v2/_catalog`
 
-4. 打标签：`docker tag <目标镜像> \<服务器IP:端口/镜像名>`
+4. 打标签：`docker tag <目标镜像>  <服务器IP:端口/镜像名>`
 
 5. 修改push的HTTPS要求: `vim /etc/docker/daemon.json`            
 
-   { "insecure-registries": ["\<服务器IP:端口>"] }
+   { "insecure-registries": ["<服务器IP:端口>"] }
 
 6. 重启docker：`systemctl restart docker`
 
@@ -148,7 +148,7 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 2. 修改pull的HTTPS要求: `vim /etc/docker/daemon.json`
 
-   { "insecure-registries": ["\<服务器IP:端口>"] }
+   { "insecure-registries": ["<服务器IP:端口>"] }
 
 3. 重启docker：`systemctl restart docker`
 

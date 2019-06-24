@@ -18,8 +18,10 @@ Modify `configuration-driver.toml` file which under `./cmd/res` folder
   Name = "SimulationServer"
   [[Servers.Nodes]]
     NodeID = "ns=5;s=Counter1"
+    DeviceResource = "Counter1"
   [[Servers.Nodes]]
     NodeID = "ns=5;s=Random1"
+    DeviceResource = "Random1"
 ```
 
 ### Pre-define Devices

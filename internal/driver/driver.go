@@ -101,7 +101,7 @@ func (d *Driver) handleReadCommandRequest(deviceClient *opcua.Client, req ds_mod
 	var result = &ds_models.CommandValue{}
 	var err error
 
-	var nodeID, ok = findNodeidFromObj(addr, req)
+	var nodeID, ok = findNodeidFromConfig(addr, req)
 	if !ok {
 		err = fmt.Errorf("Driver.handleReadCommands: No such nodeId for this type. device=%s, attributes=%v", addr.Name, req.DeviceObject.Attributes)
 		return result, err
@@ -225,15 +225,15 @@ func getUrlFromAddressable(addr *models.Addressable) string {
 	return url
 }
 
-func findNodeidFromObj(addr *models.Addressable, req ds_models.CommandRequest) (string, bool) {
+func findNodeidFromConfig(addr *models.Addressable, req ds_models.CommandRequest) (string, bool) {
 	var nodeID string
 	deviceResource := req.RO.Object
 	deviceName := addr.Name
-	// refers to other search function using for loop
+
 	for _, s := range driver.Config.Servers {
 		if deviceName == s.Name {
 			for _, n := range s.Nodes {
-				if strings.Contains(n.NodeID, deviceResource) {
+				if deviceResource == n.DeviceResource {
 					nodeID = n.NodeID
 					return nodeID, true
 				}
