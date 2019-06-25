@@ -9,6 +9,7 @@
 package driver
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"sync"
@@ -76,13 +77,12 @@ func (d *Driver) HandleReadCommands(addr *models.Addressable, reqs []ds_models.C
 
 	// create device client and open connection
 	var endpoint = getUrlFromAddressable(addr)
-	c := &opcua.Client{EndpointURL: endpoint}
-	err = c.Connect()
-	if err != nil {
-		driver.lc.Warn(fmt.Sprintf("Driver.HandleReadCommands: Failed to create OPCUA client, caused by %s", err))
+	ctx := context.Background()
+	c := opcua.NewClient(endpoint, opcua.SecurityMode(ua.MessageSecurityModeNone))
+	if err := c.Connect(ctx); err != nil {
+		driver.lc.Warn(fmt.Sprintf("Driver.HandleReadCommands: Failed to create OPCUA client, %s", err))
 		return responses, err
 	}
-	defer c.Close()
 
 	for i, req := range reqs {
 		// handle every reqs
@@ -108,7 +108,7 @@ func (d *Driver) handleReadCommandRequest(deviceClient *opcua.Client, req ds_mod
 	}
 
 	// get NewNodeID
-	id, err := ua.NewNodeID(nodeID)
+	id, err := ua.ParseNodeID(nodeID)
 	if err != nil {
 		driver.lc.Error(fmt.Sprintf("Driver.handleReadCommands: Invalid node id=%s", nodeID))
 		return result, err

@@ -1,4 +1,4 @@
-#
+# Schedule event configutation
 [[Servers]]
   Name = "SimulationServer"
   [[Servers.Nodes]]
@@ -7,3 +7,14 @@
   [[Servers.Nodes]]
     NodeID = "ns=5;s=Random1"
     DeviceResource = "Random1"
+
+# Subscribe configuration
+[IncomingDataServer]
+  Endpoint = "opc.tcp://192.168.3.170:53530/OPCUA/SimulationServer"  # OPC UA Endpoint URL
+  Policy = "None"               # Security policy: None, Basic128Rsa15, Basic256, Basic256Sha256. Default: auto
+  Mode = "None"                 # Security mode: None, Sign, SignAndEncrypt. Default: auto
+  CertFile = ""                 # Path to cert.pem. Required for security mode/policy != None
+  KeyFile = ""                  # Path to private key.pem. Required for security mode/policy != None
+  NodeID = "ns=5;s=Counter1"    # Node id to subscribe to
+  Name = "SimulationServer"     #
+  DeviceResource = "Counter1"   # Device Resource relevant to endpoint value

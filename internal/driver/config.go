@@ -10,17 +10,29 @@ import (
 )
 
 type configuration struct {
-	Servers []Server
+	Servers 			[]Server
+	IncomingDataServer 	SubscribeInfo
 }
 
 type Server struct {
-	Name  string
-	Nodes []Node
+	Name  		string
+	Nodes 		[]Node
 }
 
 type Node struct {
-	NodeID string
-	DeviceResource string
+	NodeID 			string
+	DeviceResource 	string
+}
+
+type SubscribeInfo struct {
+	Endpoint		string
+	Policy 			string
+	Mode  			string
+	CertFile	 	string
+	KeyFile 		string
+	NodeID 			string
+	Name			string
+	DeviceResource 	string
 }
 
 // LoadConfigFromFile use to load toml configuration

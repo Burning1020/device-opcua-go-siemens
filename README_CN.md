@@ -2,7 +2,7 @@
 
 ---
 
-​	此文档用于详细描述边缘计算框架degexfoundty部署到树莓派上的方法，可能出现的bug以及必要的说明
+此文档用于详细描述边缘计算框架degexfoundty部署到树莓派上的方法，可能出现的bug以及必要的说明
 
 **目录**
 
@@ -27,7 +27,7 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 ### 1.2.1 目标
 
-针对基于**OPC-UA协议**的设备/传感器，基于官方github给出的 [device-skd-go](<https://github.com/edgexfoundry/device-sdk-go>)的delhi分支下的模板，定制**device-opcua微服务**的**golang**版本，可以实现对此类设备的**注册**、**管理**、**控制**等，制作此微服务的**Docker镜像**，并部署在**树莓派3b+**上，实现对OPCUA服务端节点的**读取/设置**等操作。
+针对基于**OPC-UA协议**的设备/传感器，基于官方github给出的 [device-skd-go](<https://github.com/edgexfoundry/device-sdk-go>)的delhi分支下的模板，定制**device-opcua微服务**的**golang**版本，调用opcua的 [go SDK](<https://github.com/gopcua/opcua>)接口,可以实现对此类设备的**注册**、**管理**、**控制**等，制作此微服务的**Docker镜像**，并部署在**树莓派3b+**，实现对OPCUA服务端节点的**读取、设置、监听**等操作。
 
 ### 1.2.2 准备
 
@@ -35,34 +35,23 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 1. `configuration.toml`文件提供device-opcua服务的信息、consul服务的信息、其他需要和设备服务交互的微服务的信息、Device信息（包含**Device Profile的目录**）、日志信息、预定义Schedule和SchedukeEvent信息（包含要**定时执行的命令**）、预定义设备信息（包含**设备的Addressable信息**）。 
 
-2. `configuration-driver.toml`文件提供OPCUA Server的节点ID信息和NodeID与deviceResource的对应关系
+2. `configuration-driver.toml`文件提供OPCUA Server的NodeID与deviceResource的对应关系，以及监听操作的端点信息和设备资源对应关系
 
-3. Device Profile可以看作这一类设备的模板
-
-
-   有关它的书写参见[相关资料](#相关资料)1 2
+3.  `OpcuaServer.yaml`作为设备的Device Profile, 有关它的书写参见[相关资料](#相关资料)1 2
    
 
 *注* ：configuration.toml, configuration-driver.toml和Device Profile应确定好**唯一**的映射关系
 
-### 1.2.4 代码
+### 1.2.4 已实现功能
+  
+  1. 读取相关配置文件
+  2. 创建OPCUA设备
+  5. 自动启动监听操作
+  5. 如果定义schedule则通过轮询的方式对指定节点进行读取操作
 
 代码的编写参考官方文档：<https://docs.edgexfoundry.org/Ch-GettingStartedSDK-Go.html>
 
 代码已提交至github仓库：<https://github.com/Burning1020/device-opcua-go>
-
-+ 已完成
-  
-  1. 读取配置文件`cmd/res/configuration.toml`，若是在Docker环境下则读取`cmd/res/docker/configuration.toml`文件
-  2. 读取配置文件`cmd/res/configuration-driver.toml`
-  3. 读取配置中相应目录下的`*.yaml/*.yml`文件
-  4. 调用opcua的 [go SDK](<https://github.com/gopcua/opcua>)， 创建OPCUA 客户端
-  5. 通过轮询的方式对指定节点进行读取操作
-  
- + *待完成*
-
-     *1. 改为监听的方式*
-     *2. 节点的设置操作*
 
 ### 1.2.5 包管理
 
@@ -80,7 +69,7 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 + 执行`make build`命令编译可执行二进制文件device-opcua-go至cmd目录
 + 执行`make run`命令运行此可执行文件
-+ 执行`make build-arm64`命令构建`Burning/device-opcua-go-arm64:$(VERSION)`镜像，此镜像可放在树莓派内的Docker容器中运行，配置文件的读取参见[1.2.4](#1.2.4代码)
++ 执行`make build-arm64`命令构建镜像，此镜像可放在树莓派内的Docker容器中运行，配置文件的读取参见[1.2.4](#1.2.4代码)
 
 ## 1.3 Export微服务
 
