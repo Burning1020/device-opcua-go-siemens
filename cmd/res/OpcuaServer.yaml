@@ -8,7 +8,7 @@ labels:
 description: "Simulation results of OPCUA Server"
 deviceResources:
   -
-    name: "Counter1"
+    name: "ns=5;s=Counter1"
     description: "generated counter number"
     attributes:
       { type: "counter" }
@@ -18,7 +18,7 @@ deviceResources:
       units:
         { type: "String", readWrite: "R", defaultValue: "" }
   -
-    name: "Random1"
+    name: "ns=5;s=Random1"
     description: "generated random number"
     attributes:
       { name: "random" }
@@ -30,38 +30,52 @@ deviceResources:
 
 resources:
   -
-    name: "GetCountNum"
+    name: "CounterNum"
     get:
       -
-        { operation: "get", object: "Counter1", property: "value", parameter: "Counter1" }
+        { operation: "get", object: "ns=5;s=Counter1", property: "value", parameter: "ns=5;s=Counter1" }
+    set:
+      - { operation: "set", object: "ns=5;s=Counter1", property: "value", parameter: "ns=5;s=Counter1" }
   -
-    name: "GetRandNum"
+    name: "RandomNum"
     get:
       -
-        { operation: "get", object: "Random1", property: "value", parameter: "Random1" }
+        { operation: "get", object: "ns=5;s=Random1", property: "value", parameter: "ns=5;s=Random1" }
 commands:
   -
-    name: "GetCountNum"
+    name: "CounterNum"
     get:
-      path: "/api/v1/device/{deviceId}/GetCountNum"
+      path: "/api/v1/device/{deviceId}/CounterNum"
       responses:
         -
           code: "200"
           description: ""
-          expectedValues: ["GetCountNum"]
+          expectedValues: ["ns=5;s=Counter1"]
+        -
+          code: "503"
+          description: "service unavailable"
+          expectedValues: []
+    put:
+      path: "/api/v1/device/{deviceId}/CounterNum"
+      parameterNames: ["ns=5;s=Counter1"]
+      response:
+        -
+          code: "204"
+          description: "set Counter1"
+          expectedValues: []
         -
           code: "503"
           description: "service unavailable"
           expectedValues: []
   -
-    name: "GetRandNum"
+    name: "RandomNum"
     get:
-      path: "/api/v1/device/{deviceId}/GetRandNum"
+      path: "/api/v1/device/{deviceId}/RandomNum"
       responses:
         -
           code: "200"
           description: ""
-          expectedValues: ["GetRandNum"]
+          expectedValues: ["ns=5;s=Random1"]
         -
           code: "503"
           description: "service unavailable"

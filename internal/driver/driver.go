@@ -76,7 +76,7 @@ func (d *Driver) HandleReadCommands(addr *models.Addressable, reqs []ds_models.C
 	var err error
 
 	// create device client and open connection
-	var endpoint = getUrlFromAddressable(addr)
+	var endpoint = getUrlFromAddressable(*addr)
 	ctx := context.Background()
 	c := opcua.NewClient(endpoint, opcua.SecurityMode(ua.MessageSecurityModeNone))
 	if err := c.Connect(ctx); err != nil {
@@ -100,12 +100,7 @@ func (d *Driver) HandleReadCommands(addr *models.Addressable, reqs []ds_models.C
 func (d *Driver) handleReadCommandRequest(deviceClient *opcua.Client, req ds_models.CommandRequest, addr *models.Addressable) (*ds_models.CommandValue, error) {
 	var result = &ds_models.CommandValue{}
 	var err error
-
-	var nodeID, ok = findNodeidFromConfig(addr, req)
-	if !ok {
-		err = fmt.Errorf("Driver.handleReadCommands: No such nodeId for this type. device=%s, attributes=%v", addr.Name, req.DeviceObject.Attributes)
-		return result, err
-	}
+	nodeID := req.DeviceObject.Name
 
 	// get NewNodeID
 	id, err := ua.ParseNodeID(nodeID)
@@ -147,7 +142,6 @@ func (d *Driver) handleReadCommandRequest(deviceClient *opcua.Client, req ds_mod
 // command.
 func (d *Driver) HandleWriteCommands(addr *models.Addressable, reqs []ds_models.CommandRequest,
 	params []*ds_models.CommandValue) error {
-
 	if len(reqs) != 1 {
 		err := fmt.Errorf("Driver.HandleWriteCommands; too many command requests; only one supported")
 		return err
@@ -213,7 +207,7 @@ func newResult(deviceObject models.DeviceObject, ro models.ResourceOperation, re
 	return result, err
 }
 
-func getUrlFromAddressable(addr *models.Addressable) string {
+func getUrlFromAddressable(addr models.Addressable) string {
 	var url string
 	if strings.EqualFold(addr.Protocol, "TCP") {
 		url = fmt.Sprintf("opc.tcp://")
@@ -223,22 +217,4 @@ func getUrlFromAddressable(addr *models.Addressable) string {
 
 	url += fmt.Sprintf("%s:%d%s", addr.Address, addr.Port, addr.Path)
 	return url
-}
-
-func findNodeidFromConfig(addr *models.Addressable, req ds_models.CommandRequest) (string, bool) {
-	var nodeID string
-	deviceResource := req.RO.Object
-	deviceName := addr.Name
-
-	for _, s := range driver.Config.Servers {
-		if deviceName == s.Name {
-			for _, n := range s.Nodes {
-				if deviceResource == n.DeviceResource {
-					nodeID = n.NodeID
-					return nodeID, true
-				}
-			}
-		}
-	}
-	return nodeID, false
 }

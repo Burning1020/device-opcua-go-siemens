@@ -8,21 +8,31 @@ import (
 
 	sdk "github.com/edgexfoundry/device-sdk-go"
 	sdkModel "github.com/edgexfoundry/device-sdk-go/pkg/models"
+	"github.com/edgexfoundry/edgex-go/pkg/models"
 
 	"github.com/gopcua/opcua"
 	"github.com/gopcua/opcua/ua"
 )
 
+var service *sdk.Service
+
 func startIncomingListening() error {
 
 	var (
-		endpoint = driver.Config.IncomingDataServer.Endpoint
+		devicename = driver.Config.IncomingDataServer.DeviceName
 		policy   = driver.Config.IncomingDataServer.Policy
 		mode     = driver.Config.IncomingDataServer.Mode
 		certFile = driver.Config.IncomingDataServer.CertFile
 		keyFile  = driver.Config.IncomingDataServer.KeyFile
 		nodeID   = driver.Config.IncomingDataServer.NodeID
 	)
+
+	service = sdk.RunningService()
+	addr, err := findDevice(service.Devices(), devicename)
+	if err != nil {
+		return err
+	}
+	var endpoint = getUrlFromAddressable(addr)
 
 	ctx := context.Background()
 	endpoints, err := opcua.GetEndpoints(endpoint)
@@ -94,19 +104,14 @@ func startIncomingListening() error {
 			}
 		}
 	}
-
-
-	select {}
-
-	return nil
 }
 
 func onIncomingDataReceived(data interface{}) {
-	deviceName := driver.Config.IncomingDataServer.Name
-	cmd := driver.Config.IncomingDataServer.DeviceResource
+	deviceName := driver.Config.IncomingDataServer.DeviceName
+	cmd := driver.Config.IncomingDataServer.NodeID
 	reading := data
 
-	service := sdk.RunningService()
+
 
 	deviceObject, ok := service.DeviceObject(deviceName, cmd, "get")
 	if !ok {
@@ -136,4 +141,16 @@ func onIncomingDataReceived(data interface{}) {
 
 	driver.asyncCh <- asyncValues
 
+}
+
+// search for device that match devicename
+func findDevice(devices []models.Device, devicename string) (models.Addressable, error) {
+	var addr models.Addressable
+	for _, device := range devices {
+		if device.Name == devicename {
+			addr = device.Addressable
+			return addr, nil
+		}
+	}
+	return addr, fmt.Errorf("[Incoming listener] No such device, name=%s", devicename)
 }

@@ -62,7 +62,7 @@ Level = "DEBUG"
 #Schedule = "5sec-schedule"
 #  [ScheduleEvents.Addressable]
 #  HTTPMethod = "GET"
-#  Path = "/api/v1/device/name/SimulationServer/GetCountNum"
+#  Path = "/api/v1/device/name/SimulationServer/CountNum"
 
 # Pre-define Devices
 [[DeviceList]]
@@ -71,7 +71,7 @@ Level = "DEBUG"
   Description = "OPCUA device is created for test purpose"
   Labels = [ "test" ]
   [DeviceList.Addressable]
-    Address = "Burning-Laptop"
+    Address = ""
     Port = 53530
     Protocol = "TCP"
     Path = "/OPCUA/SimulationServer"
