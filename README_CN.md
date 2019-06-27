@@ -44,12 +44,13 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 ### 1.2.4 已实现功能
   
-  1. 读取相关配置文件
-  2. 创建OPCUA设备
-  5. 自动启动监听操作
-  5. 如果定义schedule则通过轮询的方式对指定节点进行读取操作
+  1. OPCUA设备管理
+  2. 监听OPCUA节点上的值
+  3. 对指定节点进行读取操作
+  4. 对指定节点进行设置操作
+  5. 根据预定义的schedule执行命令
 
-代码的编写参考官方文档：<https://docs.edgexfoundry.org/Ch-GettingStartedSDK-Go.html>
+Device Service的编写参考官方文档：<https://docs.edgexfoundry.org/Ch-GettingStartedSDK-Go.html>
 
 代码已提交至github仓库：<https://github.com/Burning1020/device-opcua-go>
 
@@ -75,11 +76,9 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 Export 微服务可将数据导出到西门子工业云平台MindSphere
 
-Export-go: https://github.com/Burning1020/export-go
+先将Open Edge Diver Kit置为export-distro的客户端，然后对其进行初始化并采集数据上云所需参数，最后发送数据
 
-## 1.4 Rule Engine微服务
-
-待补充...
+详见: Export-go: https://github.com/Burning1020/export-go
 
 # 2 OPC统一架构
 
@@ -110,10 +109,23 @@ Export-go: https://github.com/Burning1020/export-go
 
 ## 3.3 树莓派上部署device-opcua服务
 
-### 3.3.1构建私有仓库
+### 3.3.1 从docker hub上获取
+
+将构建和的镜像打标签后推送至docker hub
+
+
+```bash
+docker tag
+  
+docker push
+  ```
+
+
+### 3.3.2 从私有仓库中获取
+
 详见：[同一局域网下搭建私有Docker仓库](<https://my.oschina.net/u/3746745/blog/1811532>)
 
-**同一局域网**下，服务器和树莓派IP地址已知，让树莓派中运行的Docker拉取服务器中的镜像，在服务器中执行以下命令：
+同一局域网下，服务器和树莓派IP地址已知，让树莓派中运行的Docker拉取服务器中的镜像，在服务器中执行以下命令：
 
 1. 创建本地仓库：`docker pull registry`
 
@@ -131,7 +143,7 @@ Export-go: https://github.com/Burning1020/export-go
 
 7. 启动仓库，推送镜像：docker push <tag后的镜像名>
 
-### 3.3.2 启动镜像
+### 3.3.3 启动镜像
 
 1. 向docker-compose.yml文件添加device-opcua服务，image地址为 <tag后的镜像名>
 
@@ -142,6 +154,16 @@ Export-go: https://github.com/Burning1020/export-go
 3. 重启docker：`systemctl restart docker`
 
 4. 拉取并启动device-opcua服务：`docker-compose up -d device-opcua`
+
+# 4 云边协同
+
+## 4.1 报警服务
+
+待补充
+
+## 4.2 Kubernetes
+
+利用kubernetes将报警服务分发到节点并启动，当条件满足时触发报警动作
 
 # 相关资料
 

@@ -3,8 +3,6 @@
 ## Overview
 This repository is a Go-based EdgeX Foundry Device Service which uses OPC-UA protocol to interact with the devices or IoT objects.
 
-
-
 For more details, please refer to [README_CN.md](https://github.com/Burning1020/device-opcua-go/blob/master/README_CN.md)
 
 ## Feature
@@ -63,6 +61,14 @@ Modify `configuration-driver.toml` file which under `./cmd/res` folder if needed
   KeyFile = ""                      # Path to private key.pem. Required for security mode/policy != None
   NodeID = "ns=5;s=Counter1"        # Node id to subscribe to
 ```
+## Devic Profile
+
+A Device Profile can be thought of as a template of a type or classification of Device. 
+
+Write device profile for your own devices, difine deviceResources, resources and commands that satisfy your devices' needs. Please refer to `cmd/res/OpcuaServer.yaml`
+
+Tips: name in deviceResources should consistent with OPCUA nodeid
+
 
 ## Installation and Execution
 ```bash
