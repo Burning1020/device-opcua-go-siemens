@@ -142,22 +142,71 @@ func (d *Driver) handleReadCommandRequest(deviceClient *opcua.Client, req ds_mod
 // command.
 func (d *Driver) HandleWriteCommands(addr *models.Addressable, reqs []ds_models.CommandRequest,
 	params []*ds_models.CommandValue) error {
-	if len(reqs) != 1 {
-		err := fmt.Errorf("Driver.HandleWriteCommands; too many command requests; only one supported")
-		return err
-	}
-	if len(params) != 1 {
-		err := fmt.Errorf("Driver.HandleWriteCommands; the number of parameter is not correct; only one supported")
-		return err
-	}
 
 	driver.lc.Debug(fmt.Sprintf("Driver.HandleWriteCommands: device: %s, operation: %v, parameters: %v", addr.Name, reqs[0].RO.Operation, params))
 	var err error
-	if d.switchButton, err = params[0].BoolValue(); err != nil {
-		err := fmt.Errorf("Driver.HandleWriteCommands; the data type of parameter should be Boolean, parameter: %s", params[0].String())
-		return err
+
+	// create device client and open connection
+	var endpoint = getUrlFromAddressable(*addr)
+	ctx := context.Background()
+	c := opcua.NewClient(endpoint, opcua.SecurityMode(ua.MessageSecurityModeNone))
+	if err := c.Connect(ctx); err != nil {
+		driver.lc.Warn(fmt.Sprintf("Driver.HandleWriteCommands: Failed to create OPCUA client, %s", err))
+		return  err
 	}
 
+	for _, req := range reqs {
+		// handle every reqs every params
+		for _, param := range params {
+			err := d.handleWeadCommandRequest(c, req, addr, *param)
+			if err != nil {
+				driver.lc.Error(fmt.Sprintf("Driver.HandleWriteCommands: Handle write commands failed: %v", err))
+				return  err
+			}
+		}
+
+	}
+
+	return err
+}
+
+func (d *Driver) handleWeadCommandRequest(deviceClient *opcua.Client, req ds_models.CommandRequest, addr *models.Addressable,
+	param ds_models.CommandValue) error {
+	var err error
+	nodeID := req.DeviceObject.Name
+
+	// get NewNodeID
+	id, err := ua.ParseNodeID(nodeID)
+	if err != nil {
+		return fmt.Errorf(fmt.Sprintf("Driver.handleWriteCommands: Invalid node id=%s", nodeID))
+	}
+
+	value := int8(param.NumericValue[3]) //!!
+	v, err := ua.NewVariant(value)
+
+	if err != nil {
+		return fmt.Errorf(fmt.Sprintf("Driver.handleWriteCommands: invalid value: %v", err))
+	}
+
+	request := &ua.WriteRequest{
+		NodesToWrite: []*ua.WriteValue{
+			&ua.WriteValue{
+				NodeID:      id,
+				AttributeID: ua.AttributeIDValue,
+				Value: &ua.DataValue{
+					EncodingMask: uint8(6),  // encoding mask
+					Value:        v,
+				},
+			},
+		},
+	}
+
+	resp, err := deviceClient.Write(request)
+	if err != nil {
+		driver.lc.Error(fmt.Sprintf("Driver.handleWriteCommands: Write value %v failed: %s", v, err))
+		return err
+	}
+	driver.lc.Info(fmt.Sprintf("Driver.handleWriteCommands: write sucessfully, ", resp.Results[0]))
 	return nil
 }
 

@@ -71,7 +71,7 @@ Level = "DEBUG"
   Description = "OPCUA device is created for test purpose"
   Labels = [ "test" ]
   [DeviceList.Addressable]
-    Address = ""
+    Address = "192.168.3.168"
     Port = 53530
     Protocol = "TCP"
     Path = "/OPCUA/SimulationServer"
