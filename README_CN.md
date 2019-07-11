@@ -1,4 +1,4 @@
-**树莓派上的Edgexfoundry实战**
+#**树莓派上的Edgexfoundry实战**
 
 ---
 

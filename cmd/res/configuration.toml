@@ -4,7 +4,6 @@ Port = 49997
 ConnectRetries = 3
 Labels = []
 OpenMsg = "device opcua golang started"
-ReadMaxLimit = 256
 Timeout = 5000
 EnableAsyncReadings = true
 AsyncBufferSize = 16
@@ -15,6 +14,7 @@ Port = 8500
 CheckInterval = "10s"
 FailLimit = 3
 FailWaitTime = 10
+Type = "consul"
 
 [Clients]
   [Clients.Data]
@@ -50,19 +50,9 @@ FailWaitTime = 10
 [Logging]
 EnableRemote = false
 File = "./device-opcua.log"
-Level = "DEBUG"
 
-# Pre-define Schedule Configuration
-#[[Schedules]]
-#Name = "5sec-schedule"
-#Frequency = "PT5S"
-
-#[[ScheduleEvents]]
-#Name = "readCounter"
-#Schedule = "5sec-schedule"
-#  [ScheduleEvents.Addressable]
-#  HTTPMethod = "GET"
-#  Path = "/api/v1/device/name/SimulationServer/CountNum"
+[Writable]
+LogLevel = "INFO"
 
 # Pre-define Devices
 [[DeviceList]]
@@ -70,8 +60,15 @@ Level = "DEBUG"
   Profile = "OPCUA-Server"
   Description = "OPCUA device is created for test purpose"
   Labels = [ "test" ]
-  [DeviceList.Addressable]
-    Address = "192.168.3.168"
-    Port = 53530
-    Protocol = "TCP"
-    Path = "/OPCUA/SimulationServer"
+  [DeviceList.Protocols]
+      [DeviceList.Protocols.opcua]
+          Endpoint = "opc.tcp://Burning-Laptop:53530/OPCUA/SimulationServer"
+
+# Driver configs
+[Driver]
+  DeviceName = "SimulationServer"   # Name of Devcice exited
+  Policy = "None"                   # Security policy: None, Basic128Rsa15, Basic256, Basic256Sha256. Default: auto
+  Mode = "None"                     # Security mode: None, Sign, SignAndEncrypt. Default: auto
+  CertFile = ""                     # Path to cert.pem. Required for security mode/policy != None
+  KeyFile = ""                      # Path to private key.pem. Required for security mode/policy != None
+  NodeID = "ns=5;s=Counter1"        # Node id to subscribe to

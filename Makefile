@@ -16,7 +16,7 @@ GOFLAGS_arm64=-ldflags "-X github.com/edgexfoundry/device-opcua-go-arm64.Version
 GIT_SHA=$(shell git rev-parse HEAD)
 
 build: $(MICROSERVICES)
-	$(GO) build ./...
+	$(GO) install -tags=safe
 
 cmd/device-opcua:
 	$(GO) build $(GOFLAGS) -o $@ ./cmd
@@ -30,15 +30,14 @@ clean:
 docker:
 	docker build \
 		--label "git_sha=$(GIT_SHA)" \
-		-t edgexfoundry/docker-device-opcua-go:$(GIT_SHA) \
-		-t edgexfoundry/docker-device-opcua-go:$(VERSION)-dev \
+		-t burning1020/docker-device-opcua-go:$(VERSION)-dev \
 		.
 
 run:
 	cd bin && ./edgex-launch.sh
 
 build-arm64: $(MICROSERVICES_arm64)
-	$(GO_arm64) build ./...
+	$(GO_arm64) install -tags=safe
 
 cmd/device-opcua-arm64:
 	$(GO_arm64) build $(GOFLAGS_arm64) -o $@ ./cmd

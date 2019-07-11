@@ -2,17 +2,10 @@ module github.com/edgexfoundry/device-opcua-go
 
 require (
 	github.com/BurntSushi/toml v0.3.1
-	github.com/edgexfoundry/device-sdk-go v0.0.0-20190111001241-58ceab4ca78d
-	github.com/edgexfoundry/edgex-go v0.0.0-20190429145530-9c4e7bdd85c1
-	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
-	github.com/go-kit/kit v0.8.0 // indirect
-	github.com/go-logfmt/logfmt v0.4.0 // indirect
+	github.com/edgexfoundry/device-sdk-go v1.0.0
+	github.com/edgexfoundry/go-mod-core-contracts v0.1.0
 	github.com/gopcua/opcua v0.1.1
-	github.com/gorilla/mux v1.7.1 // indirect
-	github.com/hashicorp/consul/api v1.0.1 // indirect
-	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967 // indirect
-	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
+	github.com/spf13/cast v1.3.0
 )
 
 replace (

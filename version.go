@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package device
+package device_opcua
 
 // Global version for device-sdk-go
-const Version string = "0.7.0"
+var Version string = "to be replaced by makefile"

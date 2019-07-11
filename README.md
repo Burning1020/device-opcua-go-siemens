@@ -13,7 +13,7 @@ For more details, please refer to [README_CN.md](https://github.com/Burning1020/
 
 ## Prerequisite
 * MongoDB
-* Edgex-go
+* Edgex-go: core data, core command, core metadata
 * OPCUA Server
 
 ## Predefined configuration
@@ -27,33 +27,16 @@ Define devices for device-sdk to auto upload device profile and create device in
   Profile = "OPCUA-Server"
   Description = "OPCUA device is created for test purpose"
   Labels = [ "test" ]
-  [DeviceList.Addressable]
-    Address = ""
-    Port = 53530
-    Protocol = "TCP"
-    Path = "/OPCUA/SimulationServer"
+  [DeviceList.Protocols]
+      [DeviceList.Protocols.opcua]
+          Endpoint = "opc.tcp://Burning-Laptop:53530/OPCUA/SimulationServer"
 ```
 
-### Pre-define Schedules and ScheduleEvents(Optional)
-Define schedules and schedule events for core-command to auto exec command periodically. Please modify `configuration.toml` file
-```toml
-# Pre-define Schedule Configuration
-[[Schedules]]
-Name = "5sec-schedule"
-Frequency = "PT5S"
-
-[[ScheduleEvents]]
-Name = "readCounter"
-Schedule = "5sec-schedule"
-  [ScheduleEvents.Addressable]
-  HTTPMethod = "GET"
-  Path = "/api/v1/device/name/SimulationServer/GetCountNum"
-```
 ### Subscribe configuration
-Modify `configuration-driver.toml` file which under `./cmd/res` folder if needed
+Modify `configuration.toml` file which under `./cmd/res` folder if needed
 ```toml
-# Subscribe configuration
-[IncomingDataServer]
+# Driver configs
+[Driver]
   DeviceName = "SimulationServer"   # Name of Devcice exited
   Policy = "None"                   # Security policy: None, Basic128Rsa15, Basic256, Basic256Sha256. Default: auto
   Mode = "None"                     # Security mode: None, Sign, SignAndEncrypt. Default: auto
@@ -65,7 +48,7 @@ Modify `configuration-driver.toml` file which under `./cmd/res` folder if needed
 
 A Device Profile can be thought of as a template of a type or classification of Device. 
 
-Write device profile for your own devices, difine deviceResources, resources and commands that satisfy your devices' needs. Please refer to `cmd/res/OpcuaServer.yaml`
+Write device profile for your own devices, difine deviceResources, deviceCommands and coreCommands. Please refer to `cmd/res/OpcuaServer.yaml`
 
 Tips: name in deviceResources should consistent with OPCUA nodeid
 

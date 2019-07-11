@@ -15,11 +15,10 @@ import (
 )
 
 const (
-	version     string = device.Version
 	serviceName string = "edgex-device-opcua"
 )
 
 func main() {
 	sd := driver.NewProtocolDriver()
-	startup.Bootstrap(serviceName, version, sd)
+	startup.Bootstrap(serviceName, device_opcua.Version, sd)
 }
