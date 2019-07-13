@@ -12,7 +12,7 @@ deviceResources:
     description: "generated counter number"
     properties:
       value:
-        { type: "Int32", size: "0", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100"  }
+        { type: "Int32", size: "4", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100"  }
       units:
         { type: "String", readWrite: "R", defaultValue: "" }
   -

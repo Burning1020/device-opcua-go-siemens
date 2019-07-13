@@ -4,7 +4,6 @@ package driver
 import (
 	"context"
 	"fmt"
-	"github.com/edgexfoundry/go-mod-core-contracts/models"
 	"time"
 
 	sdk "github.com/edgexfoundry/device-sdk-go"
@@ -27,8 +26,16 @@ func startIncomingListening() error {
 	)
 
 	service = sdk.RunningService()
-	connectionInfo, err := DeviceEp(service.Devices(), devicename)
+	device, err := service.GetDeviceByName(devicename)
+	if err != nil {
+		return err
+	}
+	connectionInfo, err := CreateConnectionInfo(device.Protocols)
+	if err != nil {
+		return err
+	}
 	ctx := context.Background()
+
 	endpoints, err := opcua.GetEndpoints(connectionInfo.Endpoint)
 	if err != nil {
 		return err
@@ -49,13 +56,13 @@ func startIncomingListening() error {
 		opcua.SecurityFromEndpoint(ep, ua.UserTokenTypeAnonymous),
 	}
 
-	c := opcua.NewClient(ep.EndpointURL, opts...)
-	if err := c.Connect(ctx); err != nil {
+	client := opcua.NewClient(ep.EndpointURL, opts...)
+	if err := client.Connect(ctx); err != nil {
 		return err
 	}
-	defer c.Close()
+	defer client.Close()
 
-	sub, err := c.Subscribe(&opcua.SubscriptionParameters{
+	sub, err := client.Subscribe(&opcua.SubscriptionParameters{
 		Interval: 500 * time.Millisecond,
 	})
 	if err != nil {
@@ -63,35 +70,37 @@ func startIncomingListening() error {
 	}
 	defer sub.Cancel()
 
-	driver.Logger.Info("[Incoming listener] Start incoming data listening. ")
-
 	id, err := ua.ParseNodeID(nodeID)
 	if err != nil {
 		return err
 	}
 
 	// arbitrary client handle for the monitoring item
-	handle := uint32(1) // useless
+	handle := uint32(1) // arbitrary client id
 	miCreateRequest := opcua.NewMonitoredItemCreateRequestWithDefaults(id, ua.AttributeIDValue, handle)
 	res, err := sub.Monitor(ua.TimestampsToReturnBoth, miCreateRequest)
 	if err != nil || res.Results[0].StatusCode != ua.StatusOK {
 		return err
 	}
 
+	driver.Logger.Info("[Incoming listener] Start incoming data listening. ")
+
 	go sub.Run(ctx) // start Publish loop
 
 	// read from subscription's notification channel until ctx is cancelled
 	for {
 		select {
+		// context return
 		case <-ctx.Done():
 			return nil
+			// receive Publish Notification Data
 		case res := <-sub.Notifs:
 			if res.Error != nil {
 				driver.Logger.Debug(fmt.Sprintf("%s", res.Error))
 				continue
 			}
-
 			switch x := res.Value.(type) {
+			// result type: DateChange StatusChange
 			case *ua.DataChangeNotification:
 				for _, item := range x.MonitoredItems {
 					data := item.Value.Value.Value
@@ -136,18 +145,4 @@ func onIncomingDataReceived(data interface{}) {
 
 	driver.AsyncCh <- asyncValues
 
-}
-
-// search for device that match devicename
-func DeviceEp(devices []models.Device, devicename string) (*ConnectionInfo, error) {
-	for _, device := range devices {
-		if device.Name == devicename {
-			connectionInfo, err := CreateConnectionInfo(device.Protocols)
-			if err != nil {
-				return connectionInfo, err
-			}
-			return connectionInfo, nil
-		}
-	}
-	return nil, fmt.Errorf("[Incoming listener] No such device, name=%s", devicename)
 }

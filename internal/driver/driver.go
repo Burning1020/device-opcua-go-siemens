@@ -184,7 +184,10 @@ func (d *Driver) handleWeadCommandRequest(deviceClient *opcua.Client, req sdkMod
 		return fmt.Errorf(fmt.Sprintf("Driver.handleWriteCommands: Invalid node id=%s", nodeID))
 	}
 
-	value := int8(param.NumericValue[3]) //!!
+	value, err := newCommandValue(req.Type, param)
+	if err != nil {
+		return err
+	}
 	v, err := ua.NewVariant(value)
 
 	if err != nil {
@@ -313,4 +316,40 @@ func newResult(req sdkModel.CommandRequest, reading interface{}) (*sdkModel.Comm
 	}
 
 	return result, err
+}
+
+
+func newCommandValue(valueType sdkModel.ValueType, param *sdkModel.CommandValue) (interface{}, error) {
+	var commandValue interface{}
+	var err error
+	switch valueType {
+	case sdkModel.Bool:
+		commandValue, err = param.BoolValue()
+	case sdkModel.String:
+		commandValue, err = param.StringValue()
+	case sdkModel.Uint8:
+		commandValue, err = param.Uint8Value()
+	case sdkModel.Uint16:
+		commandValue, err = param.Uint16Value()
+	case sdkModel.Uint32:
+		commandValue, err = param.Uint32Value()
+	case sdkModel.Uint64:
+		commandValue, err = param.Uint64Value()
+	case sdkModel.Int8:
+		commandValue, err = param.Int8Value()
+	case sdkModel.Int16:
+		commandValue, err = param.Int16Value()
+	case sdkModel.Int32:
+		commandValue, err = param.Int32Value()
+	case sdkModel.Int64:
+		commandValue, err = param.Int64Value()
+	case sdkModel.Float32:
+		commandValue, err = param.Float32Value()
+	case sdkModel.Float64:
+		commandValue, err = param.Float64Value()
+	default:
+		err = fmt.Errorf("fail to convert param, none supported value type: %v", valueType)
+	}
+
+	return commandValue, err
 }

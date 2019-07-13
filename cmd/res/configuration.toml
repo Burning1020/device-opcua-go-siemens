@@ -52,7 +52,7 @@ EnableRemote = false
 File = "./device-opcua.log"
 
 [Writable]
-LogLevel = "INFO"
+LogLevel = "DEBUG"
 
 # Pre-define Devices
 [[DeviceList]]
