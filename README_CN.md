@@ -27,13 +27,13 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
 
 ### 1.2.1 目标
 
-针对基于**OPC-UA协议**的设备/传感器，基于官方github给出的 [device-skd-go](<https://github.com/edgexfoundry/device-sdk-go>)的delhi分支下的模板，定制**device-opcua微服务**的**golang**版本，调用opcua的 [go SDK](<https://github.com/gopcua/opcua>)接口,可以实现对此类设备的**注册**、**管理**、**控制**等，制作此微服务的**Docker镜像**，并部署在**树莓派3b+**，实现对OPCUA服务端节点的**读取、设置、监听**等操作。
+针对基于**OPC-UA协议**的设备/传感器，基于官方github给出的 [device-skd-go](<https://github.com/edgexfoundry/device-sdk-go>)，定制**device-opcua微服务**的**golang**版本，调用opcua的 [go SDK](<https://github.com/gopcua/opcua>)接口,可以实现对此类设备的**注册**、**管理**、**控制**等，制作此微服务的**Docker镜像**，并部署在**树莓派3b+**，实现对OPCUA服务端节点的**读取、设置、监听**等操作。
 
 ### 1.2.2 准备
 
 可提前准备好配置文件和Device Profile，方便设备微服务读取。服务启动后，配置信息可以通过[consul](<https://www.consul.io/>)服务注入，Device Profile, Device的信息等可利用[Postman](<https://www.getpostman.com/>)软件调用core-matadata服务的[API](<https://docs.edgexfoundry.org/core-metadata.html>)添加
 
-1. `configuration.toml`文件提供device-opcua服务的信息、consul服务的信息、其他需要和设备服务交互的微服务的信息、Device信息（包含**Device Profile的目录**）、日志信息、预定义Schedule和SchedukeEvent信息（包含要**定时执行的命令**）、预定义设备信息（包含**设备的Addressable信息**）。 
+1. `configuration.toml`文件提供device-opcua服务的信息、consul服务的信息、其他需要和设备服务交互的微服务的信息、Device信息（包含**Device Profile的目录**）、日志信息、预定义Schedule和SchedukeEvent信息（包含要**定时执行的命令**）、预定义设备信息（包含**设备的Endpoint信息**）、订阅设备及Node信息。 
 
 2. `configuration-driver.toml`文件提供OPCUA Server的NodeID与deviceResource的对应关系，以及监听操作的端点信息和设备资源对应关系
 
@@ -47,7 +47,7 @@ device-opcua微服务位于Device Service层，与基于OPCUA协议的设备通�
   1. OPCUA设备管理
   2. 监听OPCUA节点上的值
   3. 对指定节点进行读取操作
-  4. 对指定节点进行设置操作
+  4. 对指定节点进行写入操作
   5. 根据预定义的schedule执行命令
 
 Device Service的编写参考官方文档：<https://docs.edgexfoundry.org/Ch-GettingStartedSDK-Go.html>

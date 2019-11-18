@@ -1,0 +1,53 @@
+# Copyright 2017 Dell Inc. All rights reserved.
+name: "KEPServerInt16"
+manufacturer: "Burning"
+model: "1"
+labels:
+  - "OPCUA"
+  - "test"
+description: "KEPServer"
+deviceResources:
+  -
+    name: "ns=2;s=Channel2.Device1.k"
+    description: "generated counter number"
+    properties:
+      value:
+        { type: "Int16", size: "4", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100"  }
+      units:
+        { type: "String", readWrite: "R", defaultValue: "" }
+
+deviceCommands:
+  -
+    name: "CounterNum"
+    get:
+      -
+        { index: "1", operation: "get", deviceResource: "ns=2;s=Channel2.Device1.k" }
+    set:
+      - { index: "1", operation: "set", deviceResource: "ns=2;s=Channel2.Device1.k" }
+
+coreCommands:
+  -
+    name: "CounterNum"
+    get:
+      path: "/api/v1/device/{deviceId}/CounterNum"
+      responses:
+        -
+          code: "200"
+          description: ""
+          expectedValues: ["ns=2;s=Channel2.Device1.k"]
+        -
+          code: "503"
+          description: "service unavailable"
+          expectedValues: []
+    put:
+      path: "/api/v1/device/{deviceId}/CounterNum"
+      parameterNames: ["ns=2;s=Channel2.Device1.k"]
+      response:
+        -
+          code: "204"
+          description: "set Counter1"
+          expectedValues: []
+        -
+          code: "503"
+          description: "service unavailable"
+          expectedValues: []

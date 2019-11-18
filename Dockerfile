@@ -24,4 +24,4 @@ EXPOSE 49997
 
 COPY --from=builder /go/src/github.com/edgexfoundry/device-opcua-go/cmd /
 
-CMD ["/device-opcua", "--profile=docker", "--confdir=/res"]
+ENTRYPOINT ["/device-opcua","--profile=docker","--confdir=/res","--registry=consul://edgex-core-consul:8500"]
