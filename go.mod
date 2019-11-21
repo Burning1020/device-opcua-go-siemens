@@ -1,4 +1,4 @@
-module github.com/edgexfoundry/device-opcua-go-siemens
+module github.com/edgexfoundry/device-opcua-go
 
 require (
 	github.com/BurntSushi/toml v0.3.1
