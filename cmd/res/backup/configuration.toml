@@ -1,0 +1,271 @@
+[Service]
+  Host = "192.168.3.178"
+  Port = 49997
+  ConnectRetries = 3
+  Labels = []
+  OpenMsg = "device opcua golang started"
+  Timeout = 5000
+  EnableAsyncReadings = true
+  AsyncBufferSize = 16
+
+[Registry]
+  Host = "192.168.3.130"
+  Port = 8500
+  CheckInterval = "10s"
+  FailLimit = 3
+  FailWaitTime = 10
+  Type = "consul"
+
+[Clients]
+  [Clients.Data]
+    Name = "edgex-core-data"
+    Protocol = "http"
+    Host = "192.168.3.130"
+    Port = 48080
+    Timeout = 5000
+
+  [Clients.Metadata]
+    Name = "edgex-core-metadata"
+    Protocol = "http"
+    Host = "192.168.3.130"
+    Port = 48081
+    Timeout = 5000
+
+  [Clients.Logging]
+    Name = "edgex-support-logging"
+    Protocol = "http"
+    Host = "192.168.3.130"
+    Port = 48061
+
+[Device]
+  DataTransform = true
+  InitCmd = ""
+  InitCmdArgs = ""
+  MaxCmdOps = 12800
+  MaxCmdValueLen = 256
+  RemoveCmd = ""
+  RemoveCmdArgs = ""
+  ProfilesDir = "./res"
+
+[Logging]
+  EnableRemote = false
+  File = "./device-opcua.log"
+
+[Writable]
+  LogLevel = "DEBUG"
+
+# Pre-define Devices
+[[DeviceList]]
+  Name = "SimulationServer"
+  Profile = "OPCUA-Server"
+  Description = "OPCUA device is created for test purpose"
+  Labels = [ "test" ]
+  [DeviceList.Protocols]
+      [DeviceList.Protocols.opcua]
+          Endpoint = "opc.tcp://192.168.3.165:53530/OPCUA/SimulationServer"
+
+#[[DeviceList]]
+#  Name = "Vibrator01"
+#  Profile = "VibrationSensorDoc"
+#  Description = "Vibrator for test at 192.168.3.188"
+#  Labels = [ "VibrationSensor" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.3.188:4840"
+
+################### 20 devices ###########################################################
+#[[DeviceList]]
+#  Name = "SimulationServer01"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer02"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer03"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer04"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer05"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer06"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer07"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer08"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer09"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer10"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer11"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer12"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer13"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer14"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer15"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer16"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer17"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer18"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#[[DeviceList]]
+#  Name = "SimulationServer19"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#
+#[[DeviceList]]
+#  Name = "SimulationServer20"
+#  Profile = "OPCUA-Server"
+#  Description = "OPCUA device for test at 192.168.1.104"
+#  Labels = [ "test", "server" ]
+#  [DeviceList.Protocols]
+#      [DeviceList.Protocols.opcua]
+#          Endpoint = "opc.tcp://192.168.1.104:53530/OPCUA/SimulationServer"
+#
+#
+##########################################################################################
+
+# Subscription configs
+[Driver]
+ # SubscribeJson = " {\"devices\":[{\"deviceName\":\"SimulationServer\",\"nodeIds\":[\"ns=5;s=Counter1\"],\"policy\":\"None\",\"mode\":\"None\",\"certFile\":\"\",\"keyFile\":\"\"}]} "
+ # SubscribeJson = " {\"devices\":[{\"deviceName\":\"SimulationServer\",\"nodeIds\":[\"ns=5;s=Counter1\",\"ns=5;s=Random1\"],\"policy\":\"None\",\"mode\":\"None\",\"certFile\":\"\",\"keyFile\":\"\"}]} "
+#SubscribeJson = " {\"devices\":[{\"deviceName\":\"Vibrator01\",\"nodeIds\":[\"ns=1;i=115\"],\"policy\":\"None\",\"mode\":\"None\",\"certFile\":\"\",\"keyFile\":\"\"}]} "
+#SubscribeJson = """
+#{\"devices\":[{\"deviceName\":\"SimulationServer01\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer02\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer03\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer04\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer05\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer06\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer07\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer08\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer09\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer10\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer11\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer12\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer13\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer14\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer15\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer16\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer17\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer18\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer19\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer20\",\"nodeIds\":[\"ns=5;s=Counter1\"]}]}
+#"""
+#SubscribeJson = """
+#{\"devices\":[{\"deviceName\":\"SimulationServer01\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer02\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer03\",\"nodeIds\":[\"ns=5;s=Counter1\"]},{\"deviceName\":\"SimulationServer04\",\"nodeIds\":[\"ns=5;s=Counter1\"]}]}
+#"""

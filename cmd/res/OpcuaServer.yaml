@@ -1,78 +1,116 @@
-# Copyright 2017 Dell Inc. All rights reserved.
-name: "OPCUA-Server"
+name: "OPCUA-Server-t"
 manufacturer: "Burning"
-model: "1"
 labels:
   - "OPCUA"
   - "test"
 description: "Simulation results of OPCUA Server"
+
 deviceResources:
-  -
-    name: "ns=5;s=Counter1"
-    description: "generated counter number"
+  - name: "Counter"
+    description: "regular interval increment nums"
     properties:
-      value:
-        { type: "Int32", size: "4", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100"  }
-      units:
-        { type: "String", readWrite: "R", defaultValue: "" }
-  -
-    name: "ns=5;s=Random1"
-    description: "generated random number"
+      value: { type: "int32", size: "4", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100" }
+      units: { type: "String", readWrite: "R", defaultValue: "" }
+
+  - name: "Random"
+    description: "random decimal between 0 and 1"
     properties:
-      value:
-        { type: "Double", size: "4", readWrite: "R", defaultValue: "0.00", minimum: "0.00", maximum: "1.00"  }
-      units:
-        { type: "String", readWrite: "R", defaultValue: "" }
+      value: { type: "float64", size: "8", readWrite: "R", defaultValue: "0.00", minimum: "0.00", maximum: "1.00" }
+      units: { type: "String", readWrite: "R", defaultValue: "" }
+
+  - name: "SubMark"
+    description: "random decimal between 0 and 1"
+    properties:
+      value: { type: "string", size: "255", readWrite: "RW" }
+      units: { type: "String", readWrite: "R", defaultValue: "" }
 
 deviceCommands:
-  -
-    name: "CounterNum"
+  - name: "Values"
     get:
-      -
-        { index: "1", operation: "get", deviceResource: "ns=5;s=Counter1" }
+      - { index: "1", operation: "get", deviceResource: "Counter" }
+      - { index: "2", operation: "get", deviceResource: "Random" }
     set:
-      - { index: "1", operation: "set", deviceResource: "ns=5;s=Counter1" }
-  -
-    name: "RandomNum"
+      - { index: "1", operation: "set", deviceResource: "Counter" }
+      - { index: "2", operation: "set", deviceResource: "Random" }
+
+  - name: "Counter"
     get:
-      -
-        { index: "1", operation: "get", deviceResource: "ns=5;s=Random1" }
+      - { index: "1", operation: "get", deviceResource: "Counter" }
+    set:
+      - { index: "1", operation: "set", deviceResource: "Counter" }
+
+  - name: "Random"
+    get:
+      - { index: "1", operation: "get", deviceResource: "Random" }
+
+  - name: "Subscribe"
+    set:
+      - { index: "1", operation: "set", deviceResource: "SubMark" }
+      - { index: "2", operation: "set", deviceResource: "Counter", mappings: {"off": "0", "on": "1"} }
+      - { index: "3", operation: "set", deviceResource: "Random" , mappings: {"off": "0", "on": "1"} }
+
 coreCommands:
-  -
-    name: "CounterNum"
+  - name: "Values"
     get:
-      path: "/api/v1/device/{deviceId}/CounterNum"
+      path: "/api/v1/device/{deviceId}/Values"
       responses:
-        -
-          code: "200"
-          description: ""
-          expectedValues: ["ns=5;s=Counter1"]
-        -
-          code: "503"
+        - code: "200"
+          description: "OK"
+          expectedValues: ["Counter", "Random"]
+        - code: "503"
           description: "service unavailable"
           expectedValues: []
     put:
-      path: "/api/v1/device/{deviceId}/CounterNum"
-      parameterNames: ["ns=5;s=Counter1"]
+      path: "/api/v1/device/{deviceId}/Values"
+      parameterNames: ["Counter", "Random"]
       response:
-        -
-          code: "204"
-          description: "set Counter1"
+        - code: "200"
+          description: "set Counter, Random"
           expectedValues: []
-        -
-          code: "503"
+        - code: "503"
           description: "service unavailable"
           expectedValues: []
-  -
-    name: "RandomNum"
+
+  - name: "Counter"
     get:
-      path: "/api/v1/device/{deviceId}/RandomNum"
+      path: "/api/v1/device/{deviceId}/Counter"
       responses:
-        -
-          code: "200"
+        - code: "200"
           description: ""
-          expectedValues: ["ns=5;s=Random1"]
-        -
-          code: "503"
+          expectedValues: ["Counter"]
+        - code: "503"
+          description: "service unavailable"
+          expectedValues: []
+    put:
+      path: "/api/v1/device/{deviceId}/Counter"
+      parameterNames: ["Counter"]
+      response:
+        - code: "200"
+          description: "set Counter"
+          expectedValues: []
+        - code: "503"
+          description: "service unavailable"
+          expectedValues: []
+
+  - name: "Random"
+    get:
+      path: "/api/v1/device/{deviceId}/Random"
+      responses:
+        - code: "200"
+          description: ""
+          expectedValues: ["Random"]
+        - code: "503"
+          description: "service unavailable"
+          expectedValues: []
+
+  - name: "Subscribe"
+    put:
+      path: "/api/v1/device/{deviceId}/Subscribe"
+      parameterNames: ["SubMark", "Counter", "Random"]
+      response:
+        - code: "200"
+          description: "subscribe Counter, Random"
+          expectedValues: []
+        - code: "503"
           description: "service unavailable"
           expectedValues: []

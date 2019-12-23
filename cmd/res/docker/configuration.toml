@@ -1,5 +1,5 @@
 [Service]
-Host = "device-opcua-go"
+Host = "edgex-device-opcua"
 Port = 49997
 ConnectRetries = 3
 Labels = []
@@ -67,4 +67,4 @@ LogLevel = "INFO"
 
 # Driver configs
 [Driver]
-  SubscribeJson = " {\"devices\":[{\"deviceName\":\"SimulationServer\",\"nodeIds\":[\"ns=5;s=Counter1\",\"ns=5;s=Random1\"],\"policy\":\"None\",\"mode\":\"None\",\"certFile\":\"\",\"keyFile\":\"\"}]} "
+  #SubscribeJson = " {\"devices\":[{\"deviceName\":\"SimulationServer\",\"nodeIds\":[\"ns=5;s=Counter1\",\"ns=5;s=Random1\"],\"policy\":\"None\",\"mode\":\"None\",\"certFile\":\"\",\"keyFile\":\"\"}]} "
