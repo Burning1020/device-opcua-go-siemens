@@ -6,7 +6,6 @@ import (
 	"fmt"
 	sdk "github.com/edgexfoundry/device-sdk-go"
 	sdkModel "github.com/edgexfoundry/device-sdk-go/pkg/models"
-	"github.com/edgexfoundry/go-mod-core-contracts/models"
 	"github.com/gopcua/opcua"
 	"github.com/gopcua/opcua/monitor"
 	"time"
@@ -15,6 +14,7 @@ import (
 var service 	*sdk.Service
 var cmsMap 		map[string]*CMS
 
+// CMS is a group of opcua_client, node monitor, subscription related and opcua_nodes
 type CMS struct {
 	client 		*opcua.Client
 	monitor 	*monitor.NodeMonitor
@@ -25,42 +25,26 @@ func init()  {
 	cmsMap = make(map[string]*CMS)
 }
 
-func startListening(ctx context.Context, deviceName string, protocols map[string]models.ProtocolProperties,
-	reqs []sdkModel.CommandRequest, params []*sdkModel.CommandValue) {
-
-	// create Protocol config and the mapping rule between DeviceResource and NodeId
-	config, nodeMapping, err := CreateConfigurationAndMapping(protocols)
-	if err != nil {
-		driver.Logger.Error(fmt.Sprintf("error create configuration: %s", err))
-		return
-	}
-	// reverse nodeMapping
-	for k, v := range nodeMapping {
-		nodeMapping[v] = k
+func startListening(ctx context.Context, deviceName string, config *Configuration, nodeMapping map[string]string, nodes map[string]bool) {
+	// reverse nodeMapping, bind nodeId with node
+	for node, Id := range nodeMapping {
+		nodeMapping[Id] = node
 	}
 
 	cms, exist := cmsMap[deviceName]
 	if exist {
 		// nodeIds array contains the node ids that need to subscribe
 		var toAdd, toRemove []string
-		newNodes := make(map[string]bool)
-		for i, req := range reqs[1 : ] {
-			vd := req.DeviceResourceName
-			newNodes[vd] = convert2TF(req.Type, params[i + 1])
-			nodeId, ok := nodeMapping[vd]
-			if !ok {
-				driver.Logger.Error(fmt.Sprintf("No NodeId found by DeviceResource:%s", vd))
-				return
-			}
-			if newNodes[vd] && !cms.nodes[vd] {
-				toAdd = append(toAdd, nodeId)
-			} else if !newNodes[vd] && cms.nodes[vd] {
-				toRemove = append(toRemove, nodeId)
+		for node := range nodes{
+			if nodes[node] && !cms.nodes[node] {
+				toAdd = append(toAdd, nodeMapping[node])
+			} else if !nodes[node] && cms.nodes[node] {
+				toRemove = append(toRemove, nodeMapping[node])
 			}
 		}
-		cms.nodes = newNodes
 		_ = cms.sub.AddNodes(toAdd...)
 		_ = cms.sub.RemoveNodes(toRemove...)
+		cms.nodes = nodes
 		return
 	}
 
@@ -82,17 +66,9 @@ func startListening(ctx context.Context, deviceName string, protocols map[string
 
 	// nodeIds array contains the node ids that need to subscribe
 	var nodeIds []string
-	nodes :=  make(map[string]bool)
-	for i, req := range reqs[1 : ] {
-		vd := req.DeviceResourceName
-		nodes[vd] = convert2TF(req.Type, params[i + 1])
-		if nodes[vd] {
-			nodeId, ok := nodeMapping[vd]
-			if !ok {
-				driver.Logger.Error(fmt.Sprintf("No NodeId found by DeviceResource:%s", vd))
-				return
-			}
-			nodeIds = append(nodeIds, nodeId)
+	for node := range nodes {
+		if nodes[node] {
+			nodeIds = append(nodeIds, nodeMapping[node])
 		}
 	}
 	ch := make(chan *monitor.DataChangeMessage, 16)

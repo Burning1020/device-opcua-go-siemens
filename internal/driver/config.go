@@ -19,6 +19,7 @@ type Configuration struct {
 	CertFile	 	string
 	KeyFile 		string
 	MappingStr      string
+	SubscribedVD    string
 }
 
 const (
@@ -28,7 +29,6 @@ const (
 
 // CreateConfigurationAndMapping use to load connectionInfo for read and write command
 func CreateConfigurationAndMapping(protocols map[string]models.ProtocolProperties) (*Configuration, map[string]string, error) {
-	//info := new(ConnectionInfo)
 	config := new(Configuration)
 	protocol, ok := protocols[Protocol]
 	if !ok {
@@ -53,17 +53,12 @@ func CreateConfigurationAndMapping(protocols map[string]models.ProtocolPropertie
 
 // load by reflect to check map key and then fetch the value
 func load(config map[string]string, des interface{}) error {
-	errorMessage := "unable to load config, '%s' not exist"
 	val := reflect.ValueOf(des).Elem()
 	for i := 0; i < val.NumField(); i++ {
 		typeField := val.Type().Field(i)
 		valueField := val.Field(i)
 
-		val, ok := config[typeField.Name]
-		if !ok {
-			return fmt.Errorf(errorMessage, typeField.Name)
-		}
-
+		val := config[typeField.Name]
 		switch valueField.Kind() {
 		case reflect.Int:
 			intVal, err := strconv.Atoi(val)

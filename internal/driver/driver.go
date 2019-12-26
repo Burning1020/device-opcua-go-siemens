@@ -37,9 +37,10 @@ func NewProtocolDriver() sdkModel.ProtocolDriver {
 // Initialize performs protocol-specific initialization for the device
 // service.
 func (d *Driver) Initialize(lc logger.LoggingClient, asyncCh chan<- *sdkModel.AsyncValues) error {
+	ctx, cancel = context.WithCancel(context.Background())
 	d.Logger = lc
 	d.AsyncCh = asyncCh
-	ctx, cancel = context.WithCancel(context.Background())
+
 	return nil
 }
 
@@ -122,19 +123,23 @@ func (d *Driver) handleReadCommandRequest(deviceClient *opcua.Client, req sdkMod
 // command.
 func (d *Driver) HandleWriteCommands(deviceName string, protocols map[string]models.ProtocolProperties,
 	reqs []sdkModel.CommandRequest, params []*sdkModel.CommandValue) error {
-
-	if reqs[0].DeviceResourceName == SubscribeCommandName {
-		// first parameter is $SubscribeCommandName means the command is to subscribe nodes
-		go startListening(ctx, deviceName, protocols, reqs, params)
-		return nil
-	}
-	// usual command
 	// load Protocol config
 	config, nodeMapping, err := CreateConfigurationAndMapping(protocols)
 	if err != nil {
 		driver.Logger.Error(fmt.Sprintf("error create configuration: %s", err))
 		return err
 	}
+
+	if reqs[0].DeviceResourceName == SubscribeCommandName {
+		// first parameter is $SubscribeCommandName means the command is to subscribe nodes
+		nodes := make(map[string]bool)
+		for i, req := range reqs[1 : ] {
+			nodes[req.DeviceResourceName] = convert2TF(req.Type, params[i + 1])
+		}
+		go startListening(ctx, deviceName, config, nodeMapping, nodes)
+		return nil
+	}
+	// usual command
 	// create an opcua client and open connection based on config
 	client, err := createClient(config)
 	if err != nil {
