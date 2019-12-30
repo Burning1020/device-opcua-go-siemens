@@ -11,6 +11,12 @@ import (
 	"time"
 )
 
+const (
+	MassageChanCap  = 16
+ 	ReadingArrLen	  = 100
+ 	WaittingDur		=  1 * time.Second
+)
+
 var service 	*sdk.Service
 var cmsMap 		map[string]*CMS
 
@@ -71,7 +77,7 @@ func startListening(ctx context.Context, deviceName string, config *Configuratio
 			nodeIds = append(nodeIds, nodeMapping[node])
 		}
 	}
-	ch := make(chan *monitor.DataChangeMessage, 16)
+	ch := make(chan *monitor.DataChangeMessage, MassageChanCap)
 	sub, err := nodeMonitor.ChanSubscribe(ctx, ch, nodeIds...)
 	defer sub.Unsubscribe()
 	if err != nil {
@@ -86,28 +92,43 @@ func startListening(ctx context.Context, deviceName string, config *Configuratio
 	}
 
 	driver.Logger.Info(fmt.Sprintf("start subscribe device=%s", deviceName))
-	for {
-		select {
-		case <- ctx.Done():
-			return
-		case msg := <- ch:
-			if msg.Error != nil {
-				driver.Logger.Error(fmt.Sprintf("device=%s error=%s", deviceName, msg.Error))
-				return
-			}
-			deviceResource := nodeMapping[msg.NodeID.String()]
-			onIncomingDataReceived(msg.Value.Value(), deviceName, deviceResource)
-			time.Sleep(0)
-		}
-	}
 
+	cvs := make([]*sdkModel.CommandValue, 0, ReadingArrLen)
+	//for i := 0; i < 3; i++ {		go func() {
+			for {
+				select {
+				case <- ctx.Done():
+					return
+				case msg := <- ch:
+					if msg.Error != nil {
+						driver.Logger.Error(fmt.Sprintf("device=%s error=%s", deviceName, msg.Error))
+						return
+					}
+					deviceResource := nodeMapping[msg.NodeID.String()]
+					cv := toCommandValue(msg.Value.Value(), deviceName, deviceResource)
+					cvs = append(cvs, cv)
+					//if len(cvs) >= ReadingArrLen{
+					//	sentToAsynCh(cvs, deviceName)
+					//	cvs = cvs[:0]
+					//}
+					time.Sleep(0)
+				case <- time.After(WaittingDur):
+					if len(cvs) > 0 {
+						sentToAsynCh(cvs, deviceName)
+						cvs = cvs[:0]
+					}
+				}
+			}
+		//}()	}
+	select {}
 }
 
-func onIncomingDataReceived(data interface{}, deviceName string, deviceResource string) {
+func toCommandValue(data interface{}, deviceName string, deviceResource string) *sdkModel.CommandValue {
+	driver.Logger.Info(fmt.Sprintf("[Incoming listener] Incoming reading received: name=%v deviceResource=%v value=%v", deviceName, deviceResource, data))
 	deviceObject, ok := service.DeviceResource(deviceName, deviceResource, "get")
 	if !ok {
 		driver.Logger.Warn(fmt.Sprintf("[Incoming listener] Incoming reading ignored. No DeviceObject found: name=%v deviceResource=%v value=%v", deviceName, deviceResource, data))
-		return
+		return nil
 	}
 
 	req := sdkModel.CommandRequest{
@@ -118,13 +139,16 @@ func onIncomingDataReceived(data interface{}, deviceName string, deviceResource 
 	result, err := newResult(req, data)
 	if err != nil {
 		driver.Logger.Warn(fmt.Sprintf("[Incoming listener] Incoming reading ignored. name=%v deviceResource=%v value=%v", deviceName, deviceResource, data))
-		return
+		return nil
 	}
+	return result
+}
 
+func sentToAsynCh(cvs []*sdkModel.CommandValue, deviceName string)  {
 	asyncValues := &sdkModel.AsyncValues{
 		DeviceName:    deviceName,
-		CommandValues: []*sdkModel.CommandValue{result},
+		CommandValues: cvs,
 	}
-	driver.Logger.Info(fmt.Sprintf("[Incoming listener] Incoming reading received: name=%v deviceResource=%v value=%v", deviceName, deviceResource, data))
 	driver.AsyncCh <- asyncValues
 }
+

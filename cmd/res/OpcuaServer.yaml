@@ -1,4 +1,4 @@
-name: "OPCUA-Server-t"
+name: "OPCUA-Server"
 manufacturer: "Burning"
 labels:
   - "OPCUA"
@@ -9,20 +9,19 @@ deviceResources:
   - name: "Counter"
     description: "regular interval increment nums"
     properties:
-      value: { type: "int32", size: "4", readWrite: "R", defaultValue: "0", minimum: "0", maximum: "100" }
+      value: { type: "int32", size: "4", readWrite: "R", minimum: "0", maximum: "100" }
       units: { type: "String", readWrite: "R", defaultValue: "" }
 
   - name: "Random"
     description: "random decimal between 0 and 1"
     properties:
-      value: { type: "float64", size: "8", readWrite: "R", defaultValue: "0.00", minimum: "0.00", maximum: "1.00" }
+      value: { type: "float64", size: "8", floatEncoding: "eNotation", readWrite: "R", minimum: "0.00", maximum: "1.00" }
       units: { type: "String", readWrite: "R", defaultValue: "" }
 
   - name: "SubMark"
-    description: "random decimal between 0 and 1"
+    description: "A Mark to distinguish Subscribe and common command"
     properties:
-      value: { type: "string", size: "255", readWrite: "RW" }
-      units: { type: "String", readWrite: "R", defaultValue: "" }
+      value: { type: "string", readWrite: "W" }
 
 deviceCommands:
   - name: "Values"
@@ -36,8 +35,6 @@ deviceCommands:
   - name: "Counter"
     get:
       - { index: "1", operation: "get", deviceResource: "Counter" }
-    set:
-      - { index: "1", operation: "set", deviceResource: "Counter" }
 
   - name: "Random"
     get:
@@ -78,16 +75,6 @@ coreCommands:
         - code: "200"
           description: ""
           expectedValues: ["Counter"]
-        - code: "503"
-          description: "service unavailable"
-          expectedValues: []
-    put:
-      path: "/api/v1/device/{deviceId}/Counter"
-      parameterNames: ["Counter"]
-      response:
-        - code: "200"
-          description: "set Counter"
-          expectedValues: []
         - code: "503"
           description: "service unavailable"
           expectedValues: []

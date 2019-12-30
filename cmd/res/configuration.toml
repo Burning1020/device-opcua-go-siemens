@@ -1,5 +1,5 @@
 [Service]
-  Host = "192.168.3.178"
+  Host = "192.168.3.177"
   Port = 49997
   ConnectRetries = 3
   Labels = []
@@ -56,13 +56,12 @@
 
 # Pre-define Devices
 [[DeviceList]]
-  Name = "t"
-  Profile = "OPCUA-Server-t"
+  Name = "SimulationServer"
+  Profile = "OPCUA-Server"
   Description = "OPCUA device is created for test purpose"
-  Labels = [ "test" ]
   [DeviceList.Protocols]
       [DeviceList.Protocols.opcua]
-          Protocol = "opc.tcp"
+#          Protocol = "opc.tcp"
           Address = "192.168.3.165"
           Port = "53530"
           Path = "/OPCUA/SimulationServer"
@@ -71,3 +70,218 @@
 #          Mode = "None"
 #          CertFile = ""
 #          KeyFile = ""
+
+[[DeviceList]]
+  Name = "Vibrator01"
+  Profile = "VibrationSensorDoc"
+  Description = "Vibrator for test at 192.168.3.188"
+  Labels = [ "VibrationSensor" ]
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.188"
+      Port = "4840"
+      MappingStr = "{ \"Vibration\": \"ns=1;i=115\", \"Switch\": \"ns=1;i=116\" }"
+
+################## 20 devices ###########################################################
+[[DeviceList]]
+  Name = "SimulationServer01"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer02"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer03"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer04"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer05"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer06"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer07"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer08"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer09"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer10"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer11"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer12"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer13"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer14"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer15"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer16"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer17"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer18"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer19"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+[[DeviceList]]
+  Name = "SimulationServer20"
+  Profile = "OPCUA-Server"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.opcua]
+      Address = "192.168.3.165"
+      Port = "53530"
+      Path = "/OPCUA/SimulationServer"
+      MappingStr = "{ \"Counter\": \"ns=5;s=Counter1\", \"Random\": \"ns=5;s=Random1\" }"
+
+
+#########################################################################################

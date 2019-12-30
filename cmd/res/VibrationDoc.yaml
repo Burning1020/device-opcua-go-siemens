@@ -1,0 +1,75 @@
+name: "VibrationSensorDoc"
+model: "2"
+manufacturer: "Zhang Tianyang"
+labels:
+  - "OPCUA"
+  - "Siemens2019"
+description: "DeviceProfile for VibrationSensor in Wuhan Siemens"
+
+deviceResources:
+  - name: "Vibration"
+    description: "Vibration Sensor Date"
+    properties:
+      value: { type: "Int32", size: "4", readWrite: "R", defaultValue: "0", minimum: "0", maxmum: "1023" }
+      units: { type: "String", readWrite: "R", defaultValue: "Bit" }
+
+  - name: "Switch"
+    description: "Switch Node to control alert"
+    properties:
+      value: { type: "Int32", size: "4", readWrite: "W", defaultValue: "0" }
+      units: { type: "String", readWrite: "R", defaultValue: "1" }
+
+  - name: "SubMark"
+    description: "A Mark to distinguish Subscribe and common command"
+    properties:
+      value: { type: "string", readWrite: "W" }
+
+deviceCommands:
+  - name: "Vibration"
+    get:
+      - { index: "1", operation: "get", deviceResource: "Vibration" }
+
+  - name: "Alert"
+    set:
+      - { index: "1", operation: "set", deviceResource: "Switch" }
+
+  - name: "Subscribe"
+    set:
+      - { index: "1", operation: "set", deviceResource: "SubMark" }
+      - { index: "2", operation: "set", deviceResource: "Vibration", mappings: {"off": "0", "on": "1"} }
+
+coreCommands:
+  - name: "Vibration"
+    get:
+      path: "/api/v1/device/{deviceId}/Vibration"
+      responses:
+        - code: "200"
+          description: "OK"
+          expectedValues: ["185", "186", "187"]
+        - code: "503"
+          description: "service unavailable"
+          expectedValues: []
+
+  - name: "Alert"
+    put:
+      path: "/api/v1/device/{deviceId}/Alert"
+      parameterNames: ["ns=1;i=116"]
+      response:
+        - code: "200"
+          description: "OK"
+          expectedValues: []
+        - code: "503"
+          description: "service unavailable"
+          expectedValues: []
+
+  - name: "Subscribe"
+    put:
+      path: "/api/v1/device/{deviceId}/Subscribe"
+      parameterNames: ["Vibration"]
+      response:
+        - code: "200"
+          description: "subscribe Vibration"
+          expectedValues: []
+        - code: "503"
+          description: "service unavailable"
+          expectedValues: []

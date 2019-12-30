@@ -8,6 +8,12 @@ import (
 	"strconv"
 )
 
+const (
+	defaultProtocol = "opc.tcp"
+	defaultPolicy 	= "None"
+	defaultMode   	= "None"
+)
+
 // Configuration can be configured in configuration.toml
 type Configuration struct {
 	Protocol        string
@@ -19,14 +25,19 @@ type Configuration struct {
 	CertFile	 	string
 	KeyFile 		string
 	MappingStr      string
-	SubscribedVD    string
 }
 
-const (
-	defaultPolicy = "None"
-	defaultMode   = "None"
-)
-
+func (config *Configuration) setDefaultVal()  {
+	if config.Protocol == "" {
+		config.Protocol = defaultProtocol
+	}
+	if config.Policy == "" {
+		config.Policy = defaultPolicy
+	}
+	if config.Mode == "" {
+		config.Mode = defaultMode
+	}
+}
 // CreateConfigurationAndMapping use to load connectionInfo for read and write command
 func CreateConfigurationAndMapping(protocols map[string]models.ProtocolProperties) (*Configuration, map[string]string, error) {
 	config := new(Configuration)
@@ -38,12 +49,8 @@ func CreateConfigurationAndMapping(protocols map[string]models.ProtocolPropertie
 	if err != nil {
 		return nil, nil, err
 	}
-	if config.Policy == "" {
-		config.Policy = defaultPolicy
-	}
-	if config.Mode == "" {
-		config.Mode = defaultMode
-	}
+	config.setDefaultVal()
+
 	mapping, err := createNodeMapping(config.MappingStr)
 	if err != nil {
 		return config, nil, err
