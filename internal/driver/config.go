@@ -16,15 +16,15 @@ const (
 
 // Configuration can be configured in configuration.toml
 type Configuration struct {
-	Protocol        string
-	Address     	string
-	Port			string
-	Path 			string
-	Policy 			string
-	Mode  			string
-	CertFile	 	string
-	KeyFile 		string
-	MappingStr      string
+	Protocol        string		`json:"protocol"`
+	Host	     	string		`json:"host"`
+	Port			string		`json:"port"`
+	Path 			string		`json:"path"`
+	Policy 			string		`json:"policy"`
+	Mode  			string		`json:"mode"`
+	CertFile	 	string		`json:"cert_file"`
+	KeyFile 		string		`json:"key_file"`
+	MappingStr      string		`json:"mapping_str"`
 }
 
 func (config *Configuration) setDefaultVal()  {
