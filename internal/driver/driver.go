@@ -14,17 +14,18 @@ import (
 	"time"
 )
 
-var once 	sync.Once
-var driver 	*Driver
 var (
-	ctx 	context.Context
-	cancel  context.CancelFunc
+	once 		sync.Once
+	driver 		*Driver
+	ctx 		context.Context
+	cancel  	context.CancelFunc
+	wg  		*sync.WaitGroup
+    cmsMap 		map[string]*CMS
 )
 
 type Driver struct {
-	Logger           logger.LoggingClient
-	AsyncCh          chan<- *sdkModel.AsyncValues
-	CommandResponses sync.Map
+	Logger      logger.LoggingClient
+	AsyncCh		chan<- *sdkModel.AsyncValues
 }
 
 func NewProtocolDriver() sdkModel.ProtocolDriver {
@@ -40,7 +41,9 @@ func (d *Driver) Initialize(lc logger.LoggingClient, asyncCh chan<- *sdkModel.As
 	ctx, cancel = context.WithCancel(context.Background())
 	d.Logger = lc
 	d.AsyncCh = asyncCh
-
+	wg = &sync.WaitGroup{}
+	cmsMap = make(map[string]*CMS)
+	loadSubState()
 	return nil
 }
 
@@ -136,7 +139,7 @@ func (d *Driver) HandleWriteCommands(deviceName string, protocols map[string]mod
 		for i, req := range reqs[1 : ] {
 			nodes[req.DeviceResourceName] = convert2TF(req.Type, params[i + 1])
 		}
-		go startListening(ctx, deviceName, config, nodeMapping, nodes)
+		go startListening(deviceName, config, nodeMapping, nodes)
 		return nil
 	}
 	// usual command
@@ -207,9 +210,9 @@ func (d *Driver) handleWriteCommandRequest(deviceClient *opcua.Client, req sdkMo
 // for closing any in-use channels, including the channel used to send async
 // readings (if supported).
 func (d *Driver) Stop(force bool) error {
-	d.Logger.Debug("Driver is doing closing jobs...")
+	d.Logger.Debug("Driver is doing clean up jobs...")
 	cancel()
-	time.Sleep(1 * time.Second)
+	wg.Wait()
 	return nil
 }
 
@@ -274,7 +277,7 @@ func createNodeMapping(mappingStr string) (map[string]string, error) {
 func newResult(req sdkModel.CommandRequest, reading interface{}) (*sdkModel.CommandValue, error) {
 	var result = &sdkModel.CommandValue{}
 	var err error
-	var resTime = time.Now().UnixNano() / int64(time.Millisecond)
+	var resTime = time.Now().UnixNano()
 	castError := "fail to parse %v reading, %v"
 
 	if !checkValueInRange(req.Type, reading) {

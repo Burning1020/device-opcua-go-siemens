@@ -52,7 +52,7 @@
   File = "./device-opcua.log"
 
 [Writable]
-  LogLevel = "DEBUG"
+  LogLevel = "INFO"
 
 # Pre-define Devices
 [[DeviceList]]

@@ -5,9 +5,8 @@ This repository is a Go-based EdgeX Foundry Device Service which uses OPC-UA pro
 
 Read [README_CN.md](./README_CN.md) for Chinese version.
 
-## Feature
-
-1. Subscribe data from OPCUA endpoint
+## Features
+1. Subscribe device node
 2. Execute read command
 2. Execute write command
 
@@ -18,8 +17,16 @@ Read [README_CN.md](./README_CN.md) for Chinese version.
 
 ## Predefined configuration
 
+### Devic Profile
+A Device Profile can be thought of as a template of a type or classification of Device. 
+
+Write device profile for your own devices, define deviceResources, deviceCommands and coreCommands. Please refer to `cmd/res/OpcuaServer.yaml`
+
+Note: device profile must contains a "Subscribe" **SET** command if want to subscribe device node. And write **mapping** property.
+
 ### Pre-define Devices
-Define devices for device-sdk to auto upload device profile and create device instance. Please modify `configuration.toml` file which under `./cmd/res` folder
+Define devices for device-sdk to auto upload device profile and create device instance. Please modify `configuration.toml` file which under `./cmd/res` folder.
+
 ```toml
 # Pre-define Devices
 [DeviceList.Protocols]
@@ -35,29 +42,25 @@ Define devices for device-sdk to auto upload device profile and create device in
           KeyFile = ""
 ```
 
-Endpoint field provide the endpoint(protocol + host + port + server dir) config
+**Protocol**, **Policy**, **Mode**, **CertFile** and **KeyFile** properties are not necessary, they all have default value as mentioned above.
 
-### Subscribe configuration
-```toml
-
-```
-SubscribeJson field provide the subscription info for driver to subscribe the specific devices and its nodes, and some policy, security mode, certification file and key file also included.
-This info must be set as JSON format and need to escape especially because the driver struct(map[string]string) defined in [go-mod-core-contracts](https://github.com/edgexfoundry/go-mod-core-contracts)
-
-## Devic Profile
-
-A Device Profile can be thought of as a template of a type or classification of Device. 
-
-Write device profile for your own devices, difine deviceResources, deviceCommands and coreCommands. Please refer to `cmd/res/OpcuaServer.yaml`
-
-Tips: name in deviceResources should consistent with OPCUA nodeid and make sure the type match with each other
-
+Note: **MappingStr** property is JSON format and needs escape characters.
 
 ## Installation and Execution
 ```bash
 make build
 make run
+make docker
 ```
+
+## Subscribe device node
+Trigger a Subscribe command through these methods:
+
+- Edgex UI client. Sigh in -> Add Gateway and select it -> Select one DeviceService and click its Devices button -> 
+Click target device's Commands button -> Select "Subscribe" set Method -> Ignore "SubMark" and fill the blank near ValueDescriptor, 
+use "on" or "off" to represent subscribe this node or not.
+
+- Any HTTP Client like [PostMan](https://www.getpostman.com/). Use core command API to exec "subscribe" command. 
 
 ## Reference
 * EdgeX Foundry Services: https://github.com/edgexfoundry/edgex-go
@@ -65,4 +68,4 @@ make run
 * OPCUA Server: https://www.prosysopc.com/products/opc-ua-simulation-server
 
 ## Buy me a cup of coffee
-If you like this project, please star it to make encouragements.
+If you like this repository, star it and encourage me.
