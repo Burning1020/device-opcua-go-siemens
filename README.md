@@ -17,12 +17,13 @@ Read [README_CN.md](./README_CN.md) for Chinese version.
 
 ## Predefined configuration
 
-### Devic Profile
+### Device Profile
 A Device Profile can be thought of as a template of a type or classification of Device. 
 
 Write device profile for your own devices, define deviceResources, deviceCommands and coreCommands. Please refer to `cmd/res/OpcuaServer.yaml`
 
-Note: device profile must contains a "Subscribe" **SET** command if want to subscribe device node. And write **mapping** property.
+Note: device profile must contains a "SubMark" string Value Descriptor and a "Subscribe" **SET** command if want to subscribe device node. 
+And write **mappings** property. "SubMark" is used to distinguish Subscribe and other command.
 
 ### Pre-define Devices
 Define devices for device-sdk to auto upload device profile and create device instance. Please modify `configuration.toml` file which under `./cmd/res` folder.

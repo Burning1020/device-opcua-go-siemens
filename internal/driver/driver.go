@@ -238,7 +238,7 @@ func (d *Driver) RemoveDevice(deviceName string, protocols map[string]models.Pro
 }
 
 func createClient(config *Configuration) (*opcua.Client, error) {
-	endpoint := fmt.Sprintf("%s://%s:%s%s", config.Protocol, config.Address, config.Port, config.Path)
+	endpoint := fmt.Sprintf("%s://%s:%s%s", config.Protocol, config.Host, config.Port, config.Path)
 	endpoints, err := opcua.GetEndpoints(endpoint)
 	if err != nil {
 		return nil, err

@@ -188,7 +188,7 @@ func loadSubState() {
 	subState := make(map[string]map[string]bool)
 	b, err := ioutil.ReadFile(DataPath)
 	if err != nil {
-		driver.Logger.Error(fmt.Sprintf("failed to read %s: %s", DataPath, err))
+		driver.Logger.Warn(fmt.Sprintf("failed to read %s: %s", DataPath, err))
 		return
 	}
 	if err = json.Unmarshal(b, &subState); err != nil {

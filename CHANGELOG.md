@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2020-02-28
+### Fixed
+- replace "address" with "host" in configuration
+- change one log level from ERROR to WARN
+
 ## [1.1.1] - 2020-01-07
 ### Added
 - CHANGELOG.md file to document any changes.
