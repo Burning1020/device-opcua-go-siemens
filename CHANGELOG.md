@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2020-03-05
+### Fixed
+- cancel log out put when subscriptionData.json not exist or empty
+
 ## [1.1.2] - 2020-02-28
 ### Fixed
 - replace "address" with "host" in configuration

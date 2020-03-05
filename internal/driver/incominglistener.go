@@ -123,8 +123,8 @@ func startListening(deviceName string, config *Configuration, nodeMapping map[st
 			return
 		case msg := <-notifyCh:
 			deviceResource := nodeMapping[msg.NodeID.String()]
-			cv := toCommandValue(msg.Value.Value(), deviceName, deviceResource)
-			cvs = append(cvs, cv)
+			cv := toCommandValue(msg.Value.Value(), deviceName, deviceResource) // reading
+			cvs = append(cvs, cv)  // event
 			if len(cvs) >= ReadingArrLen {
 				sentToAsynCh(cvs, deviceName)
 				cvs = make([]*sdkModel.CommandValue, 0, ReadingArrLen)
@@ -133,7 +133,7 @@ func startListening(deviceName string, config *Configuration, nodeMapping map[st
 			if len(cvs) > 0 {
 				sentToAsynCh(cvs, deviceName)
 				cvs = cvs[:0]
-				cvs = make([]*sdkModel.CommandValue, 0, ReadingArrLen)
+				//cvs = make([]*sdkModel.CommandValue, 0, ReadingArrLen)
 			}
 		}
 	}
@@ -187,8 +187,7 @@ func saveSubState() {
 func loadSubState() {
 	subState := make(map[string]map[string]bool)
 	b, err := ioutil.ReadFile(DataPath)
-	if err != nil {
-		driver.Logger.Warn(fmt.Sprintf("failed to read %s: %s", DataPath, err))
+	if err != nil || b == nil {
 		return
 	}
 	if err = json.Unmarshal(b, &subState); err != nil {
